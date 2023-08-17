@@ -36,3 +36,21 @@
     transform: rotate(360deg);
   }
 }
+message-button {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  /* Add any other styling you want for the button */
+}
+
+.user-avatar {
+  max-width: 50px;
+  max-height: 50px;
+  /* Add any other styling you want for the image */
+}
+
+.message-content {
+  display: flex;
+  align-items: center;
+  /* Add any other styling you want for the message content */
+}

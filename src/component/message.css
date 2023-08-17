@@ -1,0 +1,29 @@
+message-button {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: white;
+  border-width: 0;
+  /* Add any other styling you want for the button */
+}
+
+.user-avatar {
+  max-width: 50px;
+  max-height: 50px;
+  background-color: white;
+
+  border-width: 0;
+
+  /* Add any other styling you want for the image */
+}
+
+.message-content {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  border-width: 0;
+
+  /* Add any other styli
+  background-color: white;
+  ng you want for the message content */
+}
