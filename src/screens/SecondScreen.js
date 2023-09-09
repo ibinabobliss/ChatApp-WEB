@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import DriveFileRenameOutlineOutlinedIcon from "@mui/icons-material/DriveFileRenameOutlineOutlined";
 import { Button } from "@mui/material";
 import EmergencyRecordingIcon from "@mui/icons-material/EmergencyRecording";
@@ -7,8 +7,30 @@ import SaveAsOutlinedIcon from "@mui/icons-material/SaveAsOutlined";
 import AlternateEmailOutlinedIcon from "@mui/icons-material/AlternateEmailOutlined";
 import DriveFileMoveOutlinedIcon from "@mui/icons-material/DriveFileMoveOutlined";
 import Messages from "../component/messages";
+import axios from "axios";
 
 function TopLayer() {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Fetch user data from your backend API
+    axios
+      .get("http://localhost:5000/user")
+      .then((response) => {
+        setUsers(response.data); // Assuming the response data is an array of user objects
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching user data:", error);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div
       style={{

@@ -5,14 +5,14 @@ export default function ThirdChatScreen() {
     <div
       style={{
         border: "1px solid #bdbdbd",
-        //display: "flex",
+        display: "flex",
         // flex: 1,
         borderRadius: 10,
         height: "72vh",
-        fontFamily: " Arial, Helvetica, sans-serif",
+        fontFamily: " Arial",
+        marginInline: 10,
+        paddingBottom: 20,
       }}
-    >
-      <p>hello</p>
-    </div>
+    ></div>
   );
 }

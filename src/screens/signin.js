@@ -2,128 +2,44 @@ import React, { useState } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
 import { Navigate } from "react-router-dom";
+import axios from "axios";
 
-function TopView() {
+const TopView = () => {
   return (
-    <div
-      style={{
-        textAlign: "center",
-      }}
-    >
-      <p style={{ fontWeight: "500", fontSize: 25 }}>
-        Login your chat account{" "}
+    <div style={{ textAlign: "center" }}>
+      <p
+        style={{
+          fontSize: 24,
+          color: "#212121",
+          fontWeight: "500",
+        }}
+      >
+        sign in your chat account
       </p>
       <p
         style={{
-          fontWeight: "400",
-          color: "grey",
-          fontSize: 18,
-          textTransform: "capitalize",
+          fontSize: 22,
+          color: "#9e9e9e",
+          fontWeight: "300",
         }}
       >
-        {" "}
         lets get started with your 30 days free trial{" "}
       </p>
     </div>
   );
-}
-function BottonView() {
-  return (
-    <div
-      style={{
-        textAlign: "center",
-        marginBottom: 10,
-      }}
-    >
-      <button
-        style={{
-          color: "#212121",
-          borderColor: "#bdbdbd",
-          borderWidth: 0.1,
-          backgroundColor: "#fff",
-          width: 350,
-          padding: 10,
-          borderRadius: 30,
-          fontWeight: "bold",
-          textTransform: "capitalize",
-        }}
-      >
-        login with google
-      </button>
-    </div>
-  );
-}
+};
 
-function Thirdlayer() {
-  return (
-    <div style={{ display: "flex", justifyContent: "center" }}>
-      <p style={{ fontWeight: "bold", marginRight: 5 }}>...... </p>
-      <p style={{ marginTop: 18 }}>Or sign in with </p>
-      <p style={{ fontWeight: "bold", marginLeft: 5 }}>...... </p>
-    </div>
-  );
-}
-
-function Formlayer() {
-  return (
-    <div>
-      <TextField
-        fullWidth
-        label="Name"
-        variant="outlined"
-        style={{ marginBottom: "16px" }}
-      />
-      <TextField
-        fullWidth
-        label="Email"
-        variant="outlined"
-        style={{ marginBottom: "16px" }}
-      />
-      <TextField
-        fullWidth
-        type="password"
-        label="Password"
-        variant="outlined"
-        style={{ marginBottom: "16px" }}
-      />
-    </div>
-  );
-}
-
-function Signupbutton() {
-  const [navigating, setNavigation] = useState(false);
-  const [loginNavigating, setLoginNavigation] = useState(false);
-
-  if (navigating) {
-    return <Navigate to={"/chatscreen"} />;
-  }
-  if (loginNavigating) {
+function BottomView() {
+  const [logINavigation, setLoginNavigation] = useState(false);
+  if (logINavigation) {
     return <Navigate to={"/"} />;
   }
-
   return (
-    <div
-      style={{
-        marginTop: 5,
-      }}
-    >
-      <button
-        onClick={() => setNavigation(true)}
-        style={{
-          backgroundColor: "#212121",
-          width: 350,
-          padding: 10,
-          borderRadius: 30,
-          fontWeight: "bold",
-          textTransform: "capitalize",
-          color: "#fafafa",
-        }}
-      >
-        Sign In
-      </button>
+    <div>
       <div style={{ display: "flex", marginTop: 10 }}>
-        <p style={{ fontWeight: "500" }}>Already have an account ?</p>
+        <p style={{ fontWeight: "500" }}>Don't have an account ?</p>
         <button
           onClick={() => setLoginNavigation(true)}
           style={{
@@ -131,29 +47,117 @@ function Signupbutton() {
             marginLeft: 10,
             backgroundColor: "#fff",
             borderWidth: 0,
-            marginTop: 2,
+            color: "tomato",
+            fontWeight: "600",
           }}
         >
-          Sign Up
+          Sign up
         </button>
       </div>
     </div>
   );
 }
-const Signin = () => {
+
+function SignIn() {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [navigating, setNavigation] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post("http://localhost:5000/user/signin", {
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (response.data.token) {
+        // Authentication successful, you can store the token in local storage or context
+        // for future authenticated requests
+        localStorage.setItem("token", response.data.token);
+        setNavigation(true); // Navigate to the chat screen or another protected route
+      } else {
+        setError("Authentication failed. Please check your credentials.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setError("An error occurred. Please try again later.");
+    }
+  };
+
+  if (navigating) {
+    return <Navigate to={"/chatscreen"} />;
+  }
+
   return (
     <div style={{ display: "flex", justifyContent: "center" }}>
-      <Card style={{ width: "400px", marginTop: 50, padding: 20 }}>
+      <Card
+        style={{
+          fontFamily: "Arial, Helvetica, sans-serif",
+          width: "400px",
+          marginTop: 50,
+          padding: 10,
+        }}
+      >
         <CardContent>
-          <TopView />
-          <BottonView />
-          <Thirdlayer />
-          <Formlayer />
-          <Signupbutton />
+          <form onSubmit={handleSubmit}>
+            <TopView />
+            <TextField
+              fullWidth
+              label="Email"
+              variant="outlined"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              style={{ marginBottom: "16px" }}
+            />
+            <TextField
+              fullWidth
+              type="password"
+              label="Password"
+              variant="outlined"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              style={{ marginBottom: "16px" }}
+            />
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
+              style={{
+                marginTop: "16px",
+                borderRadius: 20,
+                backgroundColor: "#212121",
+                fontWeight: "300",
+              }}
+            >
+              Sign In
+            </Button>
+            <BottomView />
+          </form>
+
+          {error && (
+            <div style={{ marginTop: "16px", color: "red" }}>{error}</div>
+          )}
         </CardContent>
       </Card>
     </div>
   );
-};
+}
 
-export default Signin;
+export default SignIn;

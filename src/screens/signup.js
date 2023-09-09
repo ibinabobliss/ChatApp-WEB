@@ -2,133 +2,43 @@ import React, { useState } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
 import Checkbox from "@mui/material/Checkbox";
+import axios from "axios";
 import { Navigate } from "react-router-dom";
 
-function TopView() {
+const TopView = () => {
   return (
-    <div
-      style={{
-        textAlign: "center",
-      }}
-    >
-      <p style={{ fontWeight: "500", fontSize: 25 }}>
-        Create your chat account{" "}
+    <div style={{ textAlign: "center" }}>
+      <p
+        style={{
+          fontSize: 24,
+          color: "#212121",
+          fontWeight: "500",
+        }}
+      >
+        create your chat account
       </p>
       <p
         style={{
-          fontWeight: "400",
-          color: "grey",
-          fontSize: 18,
-          textTransform: "capitalize",
+          fontSize: 22,
+          color: "#9e9e9e",
+          fontWeight: "300",
         }}
       >
-        {" "}
         lets get started with your 30 days free trial{" "}
       </p>
     </div>
   );
-}
-function BottonView() {
-  return (
-    <div
-      style={{
-        textAlign: "center",
-        marginBottom: 10,
-      }}
-    >
-      <button
-        style={{
-          color: "#212121",
-          borderColor: "#bdbdbd",
-          borderWidth: 0.1,
-          backgroundColor: "#fff",
-          width: 350,
-          padding: 10,
-          borderRadius: 30,
-          fontWeight: "bold",
-          textTransform: "capitalize",
-        }}
-      >
-        login with google
-      </button>
-    </div>
-  );
-}
+};
 
-function Thirdlayer() {
-  return (
-    <div style={{ display: "flex", justifyContent: "center" }}>
-      <p style={{ fontWeight: "bold", marginRight: 5 }}>...... </p>
-      <p style={{ marginTop: 18 }}>Or sign in with </p>
-      <p style={{ fontWeight: "bold", marginLeft: 5 }}>...... </p>
-    </div>
-  );
-}
-
-function Formlayer() {
-  return (
-    <div>
-      <TextField
-        fullWidth
-        label="Name"
-        variant="outlined"
-        style={{ marginBottom: "16px" }}
-      />
-      <TextField
-        fullWidth
-        label="Email"
-        variant="outlined"
-        style={{ marginBottom: "16px" }}
-      />
-      <TextField
-        fullWidth
-        type="password"
-        label="Password"
-        variant="outlined"
-        style={{ marginBottom: "16px" }}
-      />
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <Checkbox />
-        <span style={{ marginLeft: "3px", fontWeight: "500" }}>
-          I agree to all terms , privacy policy and Fees
-        </span>
-      </div>
-    </div>
-  );
-}
-
-function Signupbutton() {
-  const [navigating, setNavigation] = useState(false);
-  const [loginNavigating, setLoginNavigation] = useState(false);
-
-  if (navigating) {
-    return <Navigate to={"/chatscreen"} />;
-  }
-  if (loginNavigating) {
+function BottomView() {
+  const [logINavigation, setLoginNavigation] = useState(false);
+  if (logINavigation) {
     return <Navigate to={"/signin"} />;
   }
-
   return (
-    <div
-      style={{
-        marginTop: 5,
-      }}
-    >
-      <button
-        onClick={() => setNavigation(true)}
-        style={{
-          backgroundColor: "#212121",
-          width: 350,
-          padding: 10,
-          borderRadius: 30,
-          fontWeight: "bold",
-          textTransform: "capitalize",
-          color: "#fafafa",
-        }}
-      >
-        Sign Up
-      </button>
+    <div>
       <div style={{ display: "flex", marginTop: 10 }}>
         <p style={{ fontWeight: "500" }}>Already have an account ?</p>
         <button
@@ -138,7 +48,8 @@ function Signupbutton() {
             marginLeft: 10,
             backgroundColor: "#fff",
             borderWidth: 0,
-            marginTop: 2,
+            color: "tomato",
+            fontWeight: "600",
           }}
         >
           Sign in
@@ -147,20 +58,134 @@ function Signupbutton() {
     </div>
   );
 }
-const Signup = () => {
+
+function Signup() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    agreedToTerms: false,
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [navigating, setNavigation] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    const newValue = type === "checkbox" ? checked : value;
+    setFormData({
+      ...formData,
+      [name]: newValue,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const response = await axios.post("http://localhost:5000/user/add", {
+        username: formData.name,
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (response.data.success) {
+        setNavigation(true);
+      } else {
+        setError("Registration failed. Please try again.");
+      }
+    } catch (error) {
+      setError(
+        "An error occurred during registration. Please try again later."
+      );
+      console.error("Error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (navigating) {
+    return <Navigate to={"/chatscreen"} />;
+  }
+
   return (
     <div style={{ display: "flex", justifyContent: "center" }}>
-      <Card style={{ width: "400px", marginTop: 50, padding: 10 }}>
+      <Card
+        style={{
+          fontFamily: "Arial, Helvetica, sans-serif",
+          width: "400px",
+          marginTop: 50,
+          padding: 10,
+        }}
+      >
         <CardContent>
-          <TopView />
-          <BottonView />
-          <Thirdlayer />
-          <Formlayer />
-          <Signupbutton />
+          {/* Form */}
+          <form onSubmit={handleSubmit}>
+            <TopView />
+            <TextField
+              fullWidth
+              label="Name"
+              variant="outlined"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              style={{ marginBottom: "16px" }}
+            />
+            <TextField
+              fullWidth
+              label="Email"
+              variant="outlined"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              style={{ marginBottom: "16px" }}
+            />
+            <TextField
+              fullWidth
+              type="password"
+              label="Password"
+              variant="outlined"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              style={{ marginBottom: "16px" }}
+            />
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <Checkbox
+                name="agreedToTerms"
+                checked={formData.agreedToTerms}
+                onChange={handleChange}
+              />
+              <span style={{ marginLeft: 0, fontWeight: "500" }}>
+                I agree to all terms, privacy policy, and fees
+              </span>
+            </div>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
+              style={{
+                marginTop: "16px",
+                borderRadius: 20,
+                backgroundColor: "grey",
+              }}
+              disabled={loading} // Disable the button during form submission
+            >
+              Sign Up
+            </Button>
+            <BottomView />
+          </form>
+
+          {error && (
+            <div style={{ marginTop: "16px", color: "red" }}>{error}</div>
+          )}
         </CardContent>
       </Card>
     </div>
   );
-};
+}
 
 export default Signup;
