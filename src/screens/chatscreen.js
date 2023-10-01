@@ -19,9 +19,7 @@ export default function ChatScreen() {
         <div>
           <TopNavBar />
         </div>
-        <div>
-          <ThirdChatScreen />
-        </div>
+        <div>{/*  <ThirdChatScreen />*/}</div>
       </div>
 
       <div className="div4">

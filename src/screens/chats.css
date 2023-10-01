@@ -25,10 +25,8 @@
   background-color: #fafafa;
   width: 250px;
 }
- {
-  /*930*/
-}
-@media (max-width: 890px) {
+ 
+@media (max-width: 800px) {
   .div1 {
     display: none;
   }

@@ -14,8 +14,7 @@ const TopView = () => {
           fontSize: 24,
           color: "#212121",
           fontWeight: "500",
-        }}
-      >
+        }}>
         sign in your chat account
       </p>
       <p
@@ -23,8 +22,7 @@ const TopView = () => {
           fontSize: 22,
           color: "#9e9e9e",
           fontWeight: "300",
-        }}
-      >
+        }}>
         lets get started with your 30 days free trial{" "}
       </p>
     </div>
@@ -49,8 +47,7 @@ function BottomView() {
             borderWidth: 0,
             color: "tomato",
             fontWeight: "600",
-          }}
-        >
+          }}>
           Sign up
         </button>
       </div>
@@ -110,8 +107,7 @@ function SignIn() {
           width: "400px",
           marginTop: 50,
           padding: 10,
-        }}
-      >
+        }}>
         <CardContent>
           <form onSubmit={handleSubmit}>
             <TopView />
@@ -140,12 +136,11 @@ function SignIn() {
               color="primary"
               fullWidth
               style={{
-                marginTop: "16px",
+                marginTop: "14px",
                 borderRadius: 20,
                 backgroundColor: "#212121",
                 fontWeight: "300",
-              }}
-            >
+              }}>
               Sign In
             </Button>
             <BottomView />
